@@ -1,6 +1,7 @@
 package alexsong.com.snake;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Text;
+
+import java.util.Random;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -34,11 +37,14 @@ public class GameActivity extends AppCompatActivity {
     public TableLayout gameTable;
     public TextView snake;
     public int currX, currY;
+    public int foodX, foodY;
     public DIRECTION currDirection;
     private Handler handler = new Handler();
     private Runnable handlerTask;
     private static final int TABLE_WIDTH = 13;
     private static final int TABLE_HEIGHT = 9;
+    private static final int SNAKE_START_X = 4;
+    private static final int SNAKE_START_Y = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,9 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         snake = (TextView) findViewById(R.id.snake);
+        foodX = SNAKE_START_X;
+        foodY = SNAKE_START_Y;
+        generateFoodLocation();
         createGameTable();
         currDirection = DIRECTION.RIGHT;
         startSnake();
@@ -61,6 +70,21 @@ public class GameActivity extends AppCompatActivity {
         addListenerOnButton(downBtn, snake);
     }
 
+    /*
+     * Generate Random Food Location
+     */
+    private void generateFoodLocation() {
+        Random random = new Random();
+        int currFoodX = foodX;
+        while(foodX == currFoodX) {
+            foodX = random.nextInt(TABLE_HEIGHT);
+        }
+        int currFoodY = foodY;
+        while(foodY == currFoodY) {
+            foodY = random.nextInt(TABLE_WIDTH);
+        }
+    }
+
     private void createGameTable() {
         gameTable = (TableLayout) findViewById(R.id.gameTable);
         for(int i = 0; i < TABLE_HEIGHT; i++) {
@@ -72,9 +96,10 @@ public class GameActivity extends AppCompatActivity {
             TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
                     TableRow.LayoutParams.WRAP_CONTENT);
             rowParams.setMargins(10,10,10,10);
+
             for(int j = 0; j < TABLE_WIDTH; j++) {
-                // Add snake to first cell
-                if(i == 4 && j == 6) {
+                // Add snake to starting cell
+                if(i == SNAKE_START_X && j == SNAKE_START_Y) {
                     ViewGroup parent = (ViewGroup) snake.getParent();
                     parent.removeView(snake);
                     snake.setLayoutParams(rowParams);
@@ -83,13 +108,19 @@ public class GameActivity extends AppCompatActivity {
                     currY = j;
                     row.addView(snake);
                 }
-                // Add 0's to all other cells
                 else {
                     TextView cell = new TextView(this);
-                    cell.setId(j);
                     cell.setLayoutParams(rowParams);
                     cell.setTag(new TableCell(i, j));
-                    cell.setText("0");
+                    // Add Food to a cell
+                    if (i == foodX && j == foodY) {
+                        cell.setText("F");
+                        cell.setTypeface(null, Typeface.BOLD);
+                    }
+                    // Add 0's to all other cells
+                    else {
+                        cell.setText("0");
+                    }
                     row.addView(cell);
                 }
             }
@@ -145,12 +176,26 @@ public class GameActivity extends AppCompatActivity {
         currY += ydelta;
         row = (ViewGroup) gameTable.getChildAt(row.getId()+xdelta);
         TextView next = (TextView) row.getChildAt(currY);
+
+        // The Snake has found the food
+        if(currX == foodX && currY == foodY) {
+            generateFoodLocation();
+            ViewGroup newFoodRow = (ViewGroup) gameTable.getChildAt(foodX);
+            TextView newFoodCell = (TextView) newFoodRow.getChildAt(foodY);
+            newFoodCell.setText("F");
+            newFoodCell.setTypeface(null, Typeface.BOLD);
+
+        }
+        // Snake moves on to next cell
         next.setText(snake.getText());
+        next.setTypeface(null, Typeface.BOLD);
         snake.setText("0");
+        snake.setTypeface(null, Typeface.NORMAL);
         snake = next;
         snake.setTag(new TableCell(currX, currY));
         return true;
     }
+
 
     protected void addListenerOnButton(Button b, TextView s) {
         final Button btn = b;

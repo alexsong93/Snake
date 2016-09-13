@@ -13,7 +13,8 @@ tools:context="alexsong.com.snake.GameActivity">
 <TableLayout
     android:id="@+id/gameTable"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:stretchColumns="*">
 </TableLayout>
 
 <!-- The snake -->
@@ -21,7 +22,8 @@ tools:context="alexsong.com.snake.GameActivity">
     android:id="@+id/snake"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="x"/>
+    android:textStyle="bold"
+    android:text="X"/>
 
 <!-- left/right/up/down buttons at the bottom of the screen -->
 <TableLayout
