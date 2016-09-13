@@ -9,61 +9,24 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="alexsong.com.snake.MainActivity">
 
-    <!-- The table layout where the actual game will take place -->
-    <TableLayout
-        android:id="@+id/gameTable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </TableLayout>
-
-    <!-- The snake -->
     <TextView
-        android:id="@+id/snake"
+        android:id="@+id/title"
+        android:textSize="80sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="x"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:text="SNAKE!"/>
 
-    <!-- left/right/up/down buttons at the bottom of the screen -->
-    <TableLayout
-        android:id="@+id/navBtns"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:stretchColumns="*">
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <Button
-                android:id="@+id/upBtn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_column="1"
-                android:text="up"/>
-        </TableRow>
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <Button
-                android:id="@+id/leftBtn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="left"/>
-            <Button
-                android:id="@+id/rightBtn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:text="right"/>
-        </TableRow>
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <Button
-                android:id="@+id/downBtn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_column="1"
-                android:text="down"/>
-        </TableRow>
-    </TableLayout>
+    <Button
+        android:id="@+id/startBtn"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:textSize="20sp"
+        android:layout_below="@id/title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:text="Start"
+        android:onClick="startGame"/>
+
 </RelativeLayout>
