@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Snake</string>
+    <string name="scoreText">%1$s: %2$d</string>
 </resources>

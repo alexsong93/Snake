@@ -18,19 +18,11 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class GameActivity extends AppCompatActivity {
-
-    public static class TableCell {
-        public int x;
-        public int y;
-
-        public TableCell(int row, int col) {
-            x = row;
-            y = col;
-        }
-    }
 
     public enum DIRECTION { LEFT, RIGHT, UP, DOWN }
     public Context thisContext = this;
@@ -46,6 +38,9 @@ public class GameActivity extends AppCompatActivity {
     private static final int SNAKE_START_X = 4;
     private static final int SNAKE_START_Y = 6;
 
+    public Map<String, Integer> scoreMap = new HashMap<String, Integer>();
+    private static final String scoreKey = "Score";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +51,7 @@ public class GameActivity extends AppCompatActivity {
         foodY = SNAKE_START_Y;
         generateFoodLocation();
         createGameTable();
+        scoreMap.put(scoreKey, 0);
         currDirection = DIRECTION.RIGHT;
         startSnake();
 
@@ -70,8 +66,8 @@ public class GameActivity extends AppCompatActivity {
         addListenerOnButton(downBtn, snake);
     }
 
-    /*
-     * Generate Random Food Location
+    /**
+     * Generate random x and y coordinates for the food.
      */
     private void generateFoodLocation() {
         Random random = new Random();
@@ -85,6 +81,9 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Create the table where the game will be played.
+     */
     private void createGameTable() {
         gameTable = (TableLayout) findViewById(R.id.gameTable);
         for(int i = 0; i < TABLE_HEIGHT; i++) {
@@ -107,6 +106,7 @@ public class GameActivity extends AppCompatActivity {
                     currX = i;
                     currY = j;
                     row.addView(snake);
+
                 }
                 else {
                     TextView cell = new TextView(this);
@@ -128,6 +128,9 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Start the game by start moving the snake.
+     */
     private void startSnake() {
         handlerTask = new Runnable() {
             @Override
@@ -141,18 +144,27 @@ public class GameActivity extends AppCompatActivity {
         };
         handlerTask.run();
     }
-    /*
-    * Check if Snake is inside the gameTable
-    */
+
+    /**
+     * Check if Snake is inside the gameTable
+     * @param x
+     * @param y
+     * @return boolean
+     */
     private boolean inBounds(int x, int y) {
         return (x >= 0 && x < TABLE_HEIGHT && y >= 0 && y < TABLE_WIDTH);
     }
 
+    /**
+     * Move the snake to the next cell. The direction is indicated by currDirection.
+     * It returns true if the next cell is within the boundaries and false if it's not.
+     * @return boolean
+     */
     public boolean moveSnake() {
         TableCell currCell = (TableCell) snake.getTag();
         ViewGroup row = (ViewGroup) snake.getParent();
-        currX = currCell.x;
-        currY = currCell.y;
+        currX = currCell.getX();
+        currY = currCell.getY();
         int ydelta = 0;
         int xdelta = 0;
         switch (currDirection) {
@@ -184,7 +196,10 @@ public class GameActivity extends AppCompatActivity {
             TextView newFoodCell = (TextView) newFoodRow.getChildAt(foodY);
             newFoodCell.setText("F");
             newFoodCell.setTypeface(null, Typeface.BOLD);
+            scoreMap.put(scoreKey, scoreMap.get(scoreKey)+1);
 
+            TextView score = (TextView) findViewById(R.id.score);
+            score.setText(getString(R.string.scoreText, scoreKey, scoreMap.get(scoreKey)));
         }
         // Snake moves on to next cell
         next.setText(snake.getText());
@@ -205,8 +220,8 @@ public class GameActivity extends AppCompatActivity {
             public void onClick(View v) {
                 TableCell currCell = (TableCell) snake.getTag();
                 ViewGroup row = (ViewGroup) snake.getParent();
-                currX = currCell.x;
-                currY = currCell.y;
+                currX = currCell.getX();
+                currY = currCell.getY();
                 if(btn.getId() == R.id.leftBtn) {
                     currDirection = DIRECTION.LEFT;
                 } else if(btn.getId() == R.id.rightBtn) {
