@@ -27,8 +27,8 @@ public class GameActivity extends AppCompatActivity {
     public TableLayout gameTable;
     public SnakeNode snakeHead, snakeTail;
     public Random random = new Random();
-    public int foodX;
-    public int foodY;
+    public int foodX = 0;
+    public int foodY = 0;
     public List<int[]> forbiddenList = new ArrayList<>();
     public DIRECTION currDirection;
     private Handler handler = new Handler();
@@ -49,7 +49,7 @@ public class GameActivity extends AppCompatActivity {
         generateFoodLocation(forbiddenList);
         createGameTable();
         scoreMap.put(scoreKey, 0);
-        currDirection = DIRECTION.LEFT;
+        currDirection = DIRECTION.RIGHT;
         startSnake();
 
         Button leftBtn = (Button) findViewById(R.id.leftBtn);
@@ -107,23 +107,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     /**
-     * Generate random x and y coordinates for the food.
-     */
-    private void generateFoodLocation(List<int[]> forbiddenList) {
-        foodX = random.nextInt(TABLE_HEIGHT);
-        foodY = random.nextInt(TABLE_WIDTH);
-        for(int[] cell : forbiddenList) {
-            if(cell[0] == foodX && cell[1] == foodY) {
-                generateFoodLocation(forbiddenList);
-            } else {
-                break;
-            }
-        }
-        forbiddenList.add(new int[]{foodX, foodY});
-    }
-
-    /**
-     * Start the game by start moving the snake.
+     * Start moving the snake by repeatedly calling moveSnake
      */
     private void startSnake() {
         handlerTask = new Runnable() {
@@ -140,22 +124,11 @@ public class GameActivity extends AppCompatActivity {
     }
 
     /**
-     * Check if Snake is inside the gameTable
-     * @param x x coordinate of snake
-     * @param y y coordinate of snake
-     * @return boolean
-     */
-    private boolean inBounds(int x, int y) {
-        return (x >= 0 && x < TABLE_HEIGHT && y >= 0 && y < TABLE_WIDTH);
-    }
-
-    /**
      * Move the snake to the next cell. The direction is indicated by currDirection.
-     * It returns true if the next cell is within the boundaries and false if it's not.
+     * It returns whether or not the snake is still in a valid state after moving
      * @return boolean
      */
     public boolean moveSnake() {
-        System.out.println(forbiddenList);
         TableCell currCell = (TableCell) snakeHead.getTextView().getTag();
         ViewGroup row = (ViewGroup) snakeHead.getTextView().getParent();
         int currX = currCell.getX();
@@ -167,6 +140,13 @@ public class GameActivity extends AppCompatActivity {
         if(!inBounds(currX + xdelta, currY + ydelta)) {
             return false;
         }
+        int x = currX + xdelta;
+        int y = currY + ydelta;
+
+        if(hasHitBody(currX + xdelta, currY + ydelta)) {
+            return false;
+        }
+
         currX += xdelta;
         currY += ydelta;
         row = (ViewGroup) gameTable.getChildAt(row.getId()+xdelta);
@@ -238,6 +218,50 @@ public class GameActivity extends AppCompatActivity {
                 break;
         }
         return new int[] {xdelta, ydelta};
+    }
+
+    /**
+     * Check if Snake is inside the gameTable
+     * @param x x coordinate of the snake
+     * @param y y coordinate of the snake
+     * @return boolean
+     */
+    private boolean inBounds(int x, int y) {
+        return (x >= 0 && x < TABLE_HEIGHT && y >= 0 && y < TABLE_WIDTH);
+    }
+
+    /**
+     * Check if Snake has hit its own body
+     * @param x x coordinate of the snake
+     * @param y y coordinate of the snake
+     * @return
+     */
+    private boolean hasHitBody(int x, int y) {
+        for(int[] cell : forbiddenList) {
+            if(cell[0] == x && cell[1] == y) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Generate random x and y coordinates for the food.
+     */
+    private void generateFoodLocation(List<int[]> forbiddenList) {
+        int lastX = foodX;
+        int lastY = foodY;
+        foodX = random.nextInt(TABLE_HEIGHT);
+        foodY = random.nextInt(TABLE_WIDTH);
+        for(int[] cell : forbiddenList) {
+            // regenerate if new location hits the snake, or is the same as before
+            if((cell[0] == foodX && cell[1] == foodY) || (cell[0] == lastX && cell[1] == lastY)) {
+                generateFoodLocation(forbiddenList);
+            } else {
+                break;
+            }
+        }
     }
 
     /**
