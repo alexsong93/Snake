@@ -25,14 +25,6 @@ tools:context="alexsong.com.snake.GameActivity">
         android:layout_marginTop="20dp"
         android:text="Score: 0"/>
 
-    <!-- The snake -->
-    <TextView
-        android:id="@+id/snake"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:text="X"/>
-
     <!-- left/right/up/down buttons at the bottom of the screen -->
     <TableLayout
         android:id="@+id/navBtns"
