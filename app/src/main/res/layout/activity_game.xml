@@ -25,47 +25,4 @@ tools:context="alexsong.com.snake.GameActivity">
         android:layout_marginTop="20dp"
         android:text="Score: 0"/>
 
-    <!-- left/right/up/down buttons at the bottom of the screen -->
-    <TableLayout
-        android:id="@+id/navBtns"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:stretchColumns="*">
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <Button
-                android:id="@+id/upBtn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_column="1"
-                android:text="up"/>
-        </TableRow>
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <Button
-                android:id="@+id/leftBtn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="left"/>
-            <Button
-                android:id="@+id/rightBtn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:text="right"/>
-        </TableRow>
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <Button
-                android:id="@+id/downBtn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_column="1"
-                android:text="down"/>
-        </TableRow>
-    </TableLayout>
 </RelativeLayout>

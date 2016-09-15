@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -51,16 +52,7 @@ public class GameActivity extends AppCompatActivity {
         scoreMap.put(scoreKey, 0);
         currDirection = DIRECTION.RIGHT;
         startSnake();
-
-        Button leftBtn = (Button) findViewById(R.id.leftBtn);
-        Button rightBtn = (Button) findViewById(R.id.rightBtn);
-        Button upBtn = (Button) findViewById(R.id.upBtn);
-        Button downBtn = (Button) findViewById(R.id.downBtn);
-
-        addListenerOnButton(leftBtn);
-        addListenerOnButton(rightBtn);
-        addListenerOnButton(upBtn);
-        addListenerOnButton(downBtn);
+        setSwipeListener();
     }
 
     /**
@@ -281,21 +273,20 @@ public class GameActivity extends AppCompatActivity {
         score.setText(getString(R.string.scoreText, scoreKey, scoreMap.get(scoreKey)));
     }
 
-    protected void addListenerOnButton(Button b) {
-        final Button btn = b;
-
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(btn.getId() == R.id.leftBtn) {
-                    currDirection = DIRECTION.LEFT;
-                } else if(btn.getId() == R.id.rightBtn) {
-                    currDirection = DIRECTION.RIGHT;
-                } else if(btn.getId() == R.id.upBtn) {
-                    currDirection = DIRECTION.UP;
-                } else if (btn.getId() == R.id.downBtn) {
-                    currDirection = DIRECTION.DOWN;
-                }
+    private void setSwipeListener() {
+        View rootView = getWindow().getDecorView().getRootView();
+        rootView.setOnTouchListener(new OnSwipeTouchListener(this) {
+            public void onSwipeLeft() {
+                currDirection = DIRECTION.LEFT;
+            }
+            public void onSwipeRight() {
+                currDirection = DIRECTION.RIGHT;
+            }
+            public void onSwipeTop() {
+                currDirection = DIRECTION.UP;
+            }
+            public void onSwipeBottom() {
+                currDirection = DIRECTION.DOWN;
             }
         });
     }
