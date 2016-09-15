@@ -1,16 +1,13 @@
 package alexsong.com.snake;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -31,6 +28,7 @@ public class GameActivity extends AppCompatActivity {
     public Random random = new Random();
     public int foodX = 0;
     public int foodY = 0;
+    public List<int[]> goldList = new ArrayList<>();
     public List<int[]> forbiddenList = new ArrayList<>();
     public DIRECTION currDirection;
     private Handler handler = new Handler();
@@ -39,11 +37,16 @@ public class GameActivity extends AppCompatActivity {
     private static final int TABLE_HEIGHT = 11;
     private static final int SNAKE_START_X = 5;
     private static final int SNAKE_START_Y = 5;
-
+    private static final int GOLD_RANGE = 7;
+    private static final int GOLD_BONUS = 3;
     private static final int SNAKE_IMAGE = R.drawable.snake_1;
     private static final int FOOD_IMAGE = R.drawable.food_1;
+    private static final int GOLD_IMAGE = R.drawable.gold_1;
     private static final int BACKGROUND_TILE = R.drawable.background_tile_1;
 
+
+    public TextView scoreView;
+    public int score = 0;
     public Map<String, Integer> scoreMap = new HashMap<>();
     private static final String scoreKey = "Score";
 
@@ -52,7 +55,7 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         forbiddenList.add(new int[]{SNAKE_START_X, SNAKE_START_Y});
-        generateFoodLocation(forbiddenList);
+        generateFoodLocation();
         createGameTable();
         scoreMap.put(scoreKey, 0);
         currDirection = DIRECTION.RIGHT;
@@ -127,22 +130,17 @@ public class GameActivity extends AppCompatActivity {
         ViewGroup row = (ViewGroup) snakeHead.getView().getParent();
         int currX = currCell.getX();
         int currY = currCell.getY();
-        int[] xyArray = setDirection();
-        int xdelta = xyArray[0];
-        int ydelta = xyArray[1];
-
-        if(!inBounds(currX + xdelta, currY + ydelta)) {
-            return false;
-        }
-        int x = currX + xdelta;
-        int y = currY + ydelta;
-
-        if(hasHitBody(currX + xdelta, currY + ydelta)) {
-            return false;
-        }
+        int[] xyDirection = setDirection();
+        int xdelta = xyDirection[0];
+        int ydelta = xyDirection[1];
 
         currX += xdelta;
         currY += ydelta;
+        // return false if the snake head goes out of bounds or hits its body
+        if(!inBounds(currX, currY) || hasHitBody(currX, currY)) {
+            return false;
+        }
+
         row = (ViewGroup) gameTable.getChildAt(row.getId()+xdelta);
         ImageView newCellView = (ImageView) row.getChildAt(currY);
         newCellView.setImageResource(SNAKE_IMAGE);
@@ -160,28 +158,29 @@ public class GameActivity extends AppCompatActivity {
         boolean foundFood = (currX == foodX && currY == foodY);
         // The next cell has the food - generate a new food location and update the score
         if(foundFood) {
-            generateFoodLocation(forbiddenList);
+            generateFoodLocation();
             updateFoodLocation();
-            for(int[] cell : forbiddenList) {
-                if(cell[0] == foodX && cell[1] == foodY) {
-                    forbiddenList.remove(cell);
-                    break;
-                }
-            }
             updateScore();
+            if(score > 0 && score%GOLD_RANGE == 0) {
+                generateNewGold();
+            }
         }
         // No food was found, - remove snake tail and remove its location from forbiddenList
         else {
             curr.getView().setImageResource(BACKGROUND_TILE);
             int tailX = ((TableCell) curr.getView().getTag()).getX();
             int tailY = ((TableCell) curr.getView().getTag()).getY();
-            for(int[] cell : forbiddenList) {
-                if(cell[0] == tailX && cell[1] == tailY) {
-                    forbiddenList.remove(cell);
-                    break;
-                }
-            }
+            removeFromForbiddenList(tailX, tailY);
             prev.setNext(null);
+        }
+
+        // Found gold
+        for(int[] gCell : goldList) {
+            if(currX == gCell[0] && currY == gCell[1]) {
+                goldList.remove(gCell);
+                reduceSnakeSize();
+                break;
+            }
         }
 
         snakeHead = newSnakeHead;
@@ -226,7 +225,7 @@ public class GameActivity extends AppCompatActivity {
      * Check if Snake has hit its own body
      * @param x x coordinate of the snake
      * @param y y coordinate of the snake
-     * @return
+     * @return boolean whether or not the snake head has hit the body
      */
     private boolean hasHitBody(int x, int y) {
         for(int[] cell : forbiddenList) {
@@ -237,19 +236,70 @@ public class GameActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * Remove the location indicated by the x and y coordinates from the forbidden list
+     * @param x x coordinate of cell to remove
+     * @param y y coordinate of cell to remove
+     */
+    private void removeFromForbiddenList(int x, int y) {
+        for(int[] cell : forbiddenList) {
+            if(cell[0] == x && cell[1] == y) {
+                forbiddenList.remove(cell);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Reduce the size of the snake when it eats a gold
+     */
+    private void reduceSnakeSize() {
+        SnakeNode curr = snakeHead;
+        SnakeNode prev = curr;
+        for(int i = 0; i < forbiddenList.size()-(1+GOLD_BONUS); i++) {
+            prev = curr;
+            curr = curr.getNext();
+        }
+        prev.setNext(null);
+        while(curr != null) {
+            ImageView view = curr.getView();
+            TableCell cell = (TableCell) view.getTag();
+            view.setImageResource(R.drawable.background_tile_1);
+            removeFromForbiddenList(cell.getX(), cell.getY());
+            curr = curr.getNext();
+        }
+    }
 
     /**
      * Generate random x and y coordinates for the food.
      */
-    private void generateFoodLocation(List<int[]> forbiddenList) {
+    private void generateFoodLocation() {
         int lastX = foodX;
         int lastY = foodY;
-        foodX = random.nextInt(TABLE_HEIGHT);
-        foodY = random.nextInt(TABLE_WIDTH);
-        for(int[] cell : forbiddenList) {
-            // regenerate if new location hits the snake, or is the same as before
-            if((cell[0] == foodX && cell[1] == foodY) || (cell[0] == lastX && cell[1] == lastY)) {
-                generateFoodLocation(forbiddenList);
+        while(true) {
+            foodX = random.nextInt(TABLE_HEIGHT);
+            foodY = random.nextInt(TABLE_WIDTH);
+            // check if food location is same as before
+            boolean isSame = (foodX == lastX && foodY == lastY);
+            // check if food location is same as a gold
+            boolean hitGold = false;
+            for(int[] gCell : goldList) {
+                if(gCell[0] == foodX && gCell[1] == foodY) {
+                    hitGold = true;
+                    break;
+                }
+            }
+            // check if food location hits the snake
+            boolean hitSnake = false;
+            for(int[] cell : forbiddenList) {
+                if((cell[0] == foodX && cell[1] == foodY)) {
+                    hitSnake = true;
+                    break;
+                }
+            }
+            // break out of loop if the new position does not conflict with any of the cases
+            if(!isSame && !hitGold && !hitSnake) {
+                break;
             }
         }
     }
@@ -264,12 +314,54 @@ public class GameActivity extends AppCompatActivity {
     }
 
     /**
+     * Generate random x and y coordinates for the gold and add it to the goldList and game map.
+     */
+    private void generateNewGold() {
+        int goldX;
+        int goldY;
+        while(true) {
+            goldX = random.nextInt(TABLE_HEIGHT);
+            goldY = random.nextInt(TABLE_WIDTH);
+            // check if gold location is same as the food
+            boolean hitFood = false;
+            if (goldX == foodX && goldY == foodY) {
+                hitFood = true;
+            }
+            // check if gold location is part of the snake's body
+            boolean hitSnake = false;
+            for (int[] cell : forbiddenList) {
+                if (goldX == cell[0] && goldY == cell[1]) {
+                    hitSnake = true;
+                    break;
+                }
+            }
+            // check if gold location is already in goldList
+            boolean alreadyExists = false;
+            for (int[] gCell : goldList) {
+                if (goldX == gCell[0] && goldY == gCell[1]) {
+                    alreadyExists = true;
+                    break;
+                }
+            }
+            // break out of loop if the new position does not conflict with any of the cases
+            if (!hitFood && !hitSnake && !alreadyExists) {
+                break;
+            }
+        }
+        ViewGroup newGoldRow = (ViewGroup) gameTable.getChildAt(goldX);
+        ImageView newFoodCell = (ImageView) newGoldRow.getChildAt(goldY);
+        newFoodCell.setImageResource(GOLD_IMAGE);
+        goldList.add(new int[]{goldX, goldY});
+    }
+
+    /**
      * Update the current score
      */
     private void updateScore() {
-        scoreMap.put(scoreKey, scoreMap.get(scoreKey)+1);
-        TextView score = (TextView) findViewById(R.id.score);
-        score.setText(getString(R.string.scoreText, scoreKey, scoreMap.get(scoreKey)));
+        score = scoreMap.get(scoreKey)+1;
+        scoreMap.put(scoreKey, score);
+        scoreView = (TextView) findViewById(R.id.score);
+        scoreView.setText(getString(R.string.scoreText, scoreKey, score));
     }
 
     private void setSwipeListener() {

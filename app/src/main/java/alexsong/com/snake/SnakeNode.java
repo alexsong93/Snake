@@ -1,6 +1,5 @@
 package alexsong.com.snake;
 
-import android.view.View;
 import android.widget.ImageView;
 
 public class SnakeNode {

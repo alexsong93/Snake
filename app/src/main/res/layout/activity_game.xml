@@ -9,11 +9,21 @@ android:paddingRight="@dimen/activity_horizontal_margin"
 android:paddingTop="@dimen/activity_vertical_margin"
 tools:context="alexsong.com.snake.GameActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_centerHorizontal="true"
+        android:textSize="40sp"
+        android:text="Level 1"/>
+
     <!-- The table layout where the actual game will take place -->
     <TableLayout
         android:id="@+id/gameTable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:stretchColumns="*">
     </TableLayout>
 
@@ -22,7 +32,9 @@ tools:context="alexsong.com.snake.GameActivity">
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/gameTable"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
+        android:textSize="20sp"
         android:text="Score: 0"/>
 
 </RelativeLayout>
