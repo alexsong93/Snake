@@ -2,6 +2,7 @@ package alexsong.com.snake;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -37,8 +38,8 @@ public class GameActivity extends AppCompatActivity {
     private static final int TABLE_HEIGHT = 11;
     private static final int SNAKE_START_X = 5;
     private static final int SNAKE_START_Y = 5;
-    private static final int GOLD_RANGE = 7;
-    private static final int GOLD_BONUS = 3;
+    private static final int GOLD_RANGE = 5;
+    private static final int GOLD_BONUS = 2;
     private static final int SNAKE_IMAGE = R.drawable.snake_1;
     private static final int FOOD_IMAGE = R.drawable.food_1;
     private static final int GOLD_IMAGE = R.drawable.gold_1;
@@ -174,9 +175,13 @@ public class GameActivity extends AppCompatActivity {
             prev.setNext(null);
         }
 
-        // Found gold
         for(int[] gCell : goldList) {
+            // Found gold
             if(currX == gCell[0] && currY == gCell[1]) {
+                // Vibrate phone if snake hits gold
+                Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(200);
+                // remove gold from goldList and reduce snake size
                 goldList.remove(gCell);
                 reduceSnakeSize();
                 break;
