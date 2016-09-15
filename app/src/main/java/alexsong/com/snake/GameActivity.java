@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -26,7 +27,7 @@ public class GameActivity extends AppCompatActivity {
     public enum DIRECTION { LEFT, RIGHT, UP, DOWN }
     public Context thisContext = this;
     public TableLayout gameTable;
-    public SnakeNode snakeHead, snakeTail;
+    public SnakeNode snakeHead;
     public Random random = new Random();
     public int foodX = 0;
     public int foodY = 0;
@@ -34,10 +35,14 @@ public class GameActivity extends AppCompatActivity {
     public DIRECTION currDirection;
     private Handler handler = new Handler();
     private Runnable handlerTask;
-    private static final int TABLE_WIDTH = 13;
-    private static final int TABLE_HEIGHT = 9;
-    private static final int SNAKE_START_X = 4;
-    private static final int SNAKE_START_Y = 6;
+    private static final int TABLE_WIDTH = 11;
+    private static final int TABLE_HEIGHT = 11;
+    private static final int SNAKE_START_X = 5;
+    private static final int SNAKE_START_Y = 5;
+
+    private static final int SNAKE_IMAGE = R.drawable.snake_1;
+    private static final int FOOD_IMAGE = R.drawable.food_1;
+    private static final int BACKGROUND_TILE = R.drawable.background_tile_1;
 
     public Map<String, Integer> scoreMap = new HashMap<>();
     private static final String scoreKey = "Score";
@@ -71,25 +76,22 @@ public class GameActivity extends AppCompatActivity {
             rowParams.setMargins(10,10,10,10);
 
             for(int j = 0; j < TABLE_WIDTH; j++) {
-                TextView cellView = new TextView(this);
+                ImageView cellView = new ImageView(this);
                 cellView.setLayoutParams(rowParams);
                 cellView.setTag(new TableCell(i, j));
                 // Add snake to starting cell
                 if(i == SNAKE_START_X && j == SNAKE_START_Y) {
-                    cellView.setText("X");
-                    cellView.setTypeface(null, Typeface.BOLD);
+                    cellView.setImageResource(SNAKE_IMAGE);
                     snakeHead = new SnakeNode(cellView);
-                    snakeTail = snakeHead;
                 }
                 else {
                     // Add Food to a cell
                     if (i == foodX && j == foodY) {
-                        cellView.setText("F");
-                        cellView.setTypeface(null, Typeface.BOLD);
+                        cellView.setImageResource(FOOD_IMAGE);
                     }
                     // Add 0's to all other cells
                     else {
-                        cellView.setText("0");
+                        cellView.setImageResource(BACKGROUND_TILE);
                     }
                 }
                 row.addView(cellView);
@@ -106,7 +108,7 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if(moveSnake()) {
-                    handler.postDelayed(handlerTask, 500);
+                    handler.postDelayed(handlerTask, 200);
                 } else {
                     Toast.makeText(thisContext, "GAME OVER", Toast.LENGTH_SHORT).show();
                 }
@@ -121,8 +123,8 @@ public class GameActivity extends AppCompatActivity {
      * @return boolean
      */
     public boolean moveSnake() {
-        TableCell currCell = (TableCell) snakeHead.getTextView().getTag();
-        ViewGroup row = (ViewGroup) snakeHead.getTextView().getParent();
+        TableCell currCell = (TableCell) snakeHead.getView().getTag();
+        ViewGroup row = (ViewGroup) snakeHead.getView().getParent();
         int currX = currCell.getX();
         int currY = currCell.getY();
         int[] xyArray = setDirection();
@@ -142,12 +144,11 @@ public class GameActivity extends AppCompatActivity {
         currX += xdelta;
         currY += ydelta;
         row = (ViewGroup) gameTable.getChildAt(row.getId()+xdelta);
-        TextView newTextView = (TextView) row.getChildAt(currY);
-        newTextView.setText("X");
-        newTextView.setTypeface(null, Typeface.BOLD);
+        ImageView newCellView = (ImageView) row.getChildAt(currY);
+        newCellView.setImageResource(SNAKE_IMAGE);
         forbiddenList.add(new int[]{currX, currY});
 
-        SnakeNode newSnakeHead = new SnakeNode(newTextView);
+        SnakeNode newSnakeHead = new SnakeNode(newCellView);
         newSnakeHead.setNext(snakeHead);
         SnakeNode prev = newSnakeHead;
         SnakeNode curr = snakeHead;
@@ -171,10 +172,9 @@ public class GameActivity extends AppCompatActivity {
         }
         // No food was found, - remove snake tail and remove its location from forbiddenList
         else {
-            curr.getTextView().setText("0");
-            curr.getTextView().setTypeface(null, Typeface.NORMAL);
-            int tailX = ((TableCell) curr.getTextView().getTag()).getX();
-            int tailY = ((TableCell) curr.getTextView().getTag()).getY();
+            curr.getView().setImageResource(BACKGROUND_TILE);
+            int tailX = ((TableCell) curr.getView().getTag()).getX();
+            int tailY = ((TableCell) curr.getView().getTag()).getY();
             for(int[] cell : forbiddenList) {
                 if(cell[0] == tailX && cell[1] == tailY) {
                     forbiddenList.remove(cell);
@@ -259,9 +259,8 @@ public class GameActivity extends AppCompatActivity {
      */
     private void updateFoodLocation() {
         ViewGroup newFoodRow = (ViewGroup) gameTable.getChildAt(foodX);
-        TextView newFoodCell = (TextView) newFoodRow.getChildAt(foodY);
-        newFoodCell.setText("F");
-        newFoodCell.setTypeface(null, Typeface.BOLD);
+        ImageView newFoodCell = (ImageView) newFoodRow.getChildAt(foodY);
+        newFoodCell.setImageResource(FOOD_IMAGE);
     }
 
     /**

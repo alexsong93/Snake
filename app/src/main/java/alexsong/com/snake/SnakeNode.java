@@ -1,23 +1,24 @@
 package alexsong.com.snake;
 
-import android.widget.TextView;
+import android.view.View;
+import android.widget.ImageView;
 
 public class SnakeNode {
     private SnakeNode next;
-    private TextView textView;
+    private ImageView view;
 
-    public SnakeNode(TextView t) {
-        textView = t;
+    public SnakeNode(ImageView v) {
+        view = v;
     }
 
-    public TextView getTextView() {
-        return textView;
+    public ImageView getView() {
+        return view;
     }
     public SnakeNode getNext() {
         return next;
     }
-    public void setTextView(TextView t) {
-        textView = t;
+    public void setView(ImageView v) {
+        view = v;
     }
     public void setNext(SnakeNode n) {
         next = n;
