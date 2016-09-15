@@ -167,14 +167,14 @@ public class GameActivity extends AppCompatActivity {
         boolean foundFood = (currX == foodX && currY == foodY);
         // The next cell has the food - generate a new food location and update the score
         if(foundFood) {
+            generateFoodLocation(forbiddenList);
+            updateFoodLocation();
             for(int[] cell : forbiddenList) {
                 if(cell[0] == foodX && cell[1] == foodY) {
                     forbiddenList.remove(cell);
                     break;
                 }
             }
-            generateFoodLocation(forbiddenList);
-            updateFoodLocation();
             updateScore();
         }
         // No food was found, - remove snake tail and remove its location from forbiddenList
@@ -258,8 +258,6 @@ public class GameActivity extends AppCompatActivity {
             // regenerate if new location hits the snake, or is the same as before
             if((cell[0] == foodX && cell[1] == foodY) || (cell[0] == lastX && cell[1] == lastY)) {
                 generateFoodLocation(forbiddenList);
-            } else {
-                break;
             }
         }
     }
