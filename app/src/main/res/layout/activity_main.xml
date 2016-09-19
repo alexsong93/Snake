@@ -11,22 +11,43 @@
 
     <TextView
         android:id="@+id/title"
-        android:textSize="80sp"
+        android:textSize="85sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
         android:text="SNAKE!"/>
 
-    <Button
-        android:id="@+id/startBtn"
-        android:layout_width="150dp"
-        android:layout_height="60dp"
-        android:textSize="20sp"
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/title"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
-        android:text="Start"
-        android:onClick="startGame"/>
+        android:orientation="horizontal"
+        android:layout_marginTop="130dp">
+
+        <Button
+            android:id="@+id/startBtn"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:textSize="20sp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginStart="25dp"
+            android:text="Start"
+            android:onClick="startGame"/>
+
+        <Button
+            android:id="@+id/settingsBtn"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:textSize="20sp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="25dp"
+            android:layout_marginEnd="25dp"
+            android:text="Settings"
+            android:onClick="goToSettings"/>
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

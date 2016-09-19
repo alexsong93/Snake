@@ -34,18 +34,18 @@ public class GameActivity extends AppCompatActivity {
     public DIRECTION currDirection;
     private Handler handler = new Handler();
     private Runnable handlerTask;
-    private static final int TABLE_WIDTH = 11;
-    private static final int TABLE_HEIGHT = 11;
-    private static final int SNAKE_START_X = 5;
-    private static final int SNAKE_START_Y = 5;
+    private static final int TABLE_WIDTH = 20;
+    private static final int TABLE_HEIGHT = 25;
+    private static final int SNAKE_START_X = 6;
+    private static final int SNAKE_START_Y = 6;
     private static final int GOLD_RANGE = 5;
     private static final int GOLD_BONUS = 2;
-    private static final int SNAKE_IMAGE = R.drawable.snake_1;
-    private static final int FOOD_IMAGE = R.drawable.food_1;
-    private static final int GOLD_IMAGE = R.drawable.gold_1;
-    private static final int BACKGROUND_TILE = R.drawable.background_tile_1;
+    private static final int SNAKE_IMAGE = R.drawable.snake_2;
+    private static final int FOOD_IMAGE = R.drawable.food_3;
+    private static final int GOLD_IMAGE = R.drawable.gold_2;
+    private static final int BACKGROUND_TILE = R.drawable.background_tile_2;
 
-
+    public static int speed = 200;
     public TextView scoreView;
     public int score = 0;
     public Map<String, Integer> scoreMap = new HashMap<>();
@@ -69,6 +69,7 @@ public class GameActivity extends AppCompatActivity {
      */
     private void createGameTable() {
         gameTable = (TableLayout) findViewById(R.id.gameTable);
+        gameTable.setStretchAllColumns(true);
         for(int i = 0; i < TABLE_HEIGHT; i++) {
             TableRow row = new TableRow(this);
             row.setId(i);
@@ -77,7 +78,7 @@ public class GameActivity extends AppCompatActivity {
             row.setLayoutParams(tableParams);
             TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
                     TableRow.LayoutParams.WRAP_CONTENT);
-            rowParams.setMargins(10,10,10,10);
+            //rowParams.setMargins(10,10,10,10);
 
             for(int j = 0; j < TABLE_WIDTH; j++) {
                 ImageView cellView = new ImageView(this);
@@ -98,6 +99,7 @@ public class GameActivity extends AppCompatActivity {
                         cellView.setImageResource(BACKGROUND_TILE);
                     }
                 }
+                cellView.setScaleType(ImageView.ScaleType.FIT_XY);
                 row.addView(cellView);
             }
             gameTable.addView(row);
@@ -112,7 +114,7 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if(moveSnake()) {
-                    handler.postDelayed(handlerTask, 200);
+                    handler.postDelayed(handlerTask, speed);
                 } else {
                     Toast.makeText(thisContext, "GAME OVER", Toast.LENGTH_SHORT).show();
                 }
@@ -269,7 +271,7 @@ public class GameActivity extends AppCompatActivity {
         while(curr != null) {
             ImageView view = curr.getView();
             TableCell cell = (TableCell) view.getTag();
-            view.setImageResource(R.drawable.background_tile_1);
+            view.setImageResource(BACKGROUND_TILE);
             removeFromForbiddenList(cell.getX(), cell.getY());
             curr = curr.getNext();
         }
@@ -369,6 +371,9 @@ public class GameActivity extends AppCompatActivity {
         scoreView.setText(getString(R.string.scoreText, scoreKey, score));
     }
 
+    /**
+     * Set listener to screen for swipe gestures
+     */
     private void setSwipeListener() {
         View rootView = getWindow().getDecorView().getRootView();
         rootView.setOnTouchListener(new OnSwipeTouchListener(this) {
