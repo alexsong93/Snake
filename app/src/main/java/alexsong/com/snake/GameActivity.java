@@ -1,9 +1,12 @@
 package alexsong.com.snake;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -11,7 +14,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -59,6 +61,10 @@ public class GameActivity extends AppCompatActivity {
     public Map<String, Integer> scoreMap = new HashMap<>();
     private static final String scoreKey = "Score";
 
+    private boolean gameOver = false;
+    private boolean snakeStopped = false;
+    private boolean startup = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +88,19 @@ public class GameActivity extends AppCompatActivity {
             countdownView.setTextColor(Color.WHITE);
             countdownView.setGravity(Gravity.CENTER);
             viewgroup.addView(countdownView);
+            startup = true;
             countDown();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(startup) {
+            finishGame();
+        } else if(!gameOver) {
+            pauseGame();
+        } else {
+            finishGame();
         }
     }
 
@@ -116,7 +134,7 @@ public class GameActivity extends AppCompatActivity {
                     if (i == foodX && j == foodY) {
                         cellView.setImageResource(FOOD_IMAGE);
                     }
-                    // Add 0's to all other cells
+                    // Add background tile to all other cells
                     else {
                         cellView.setImageResource(BACKGROUND_TILE);
                     }
@@ -135,15 +153,19 @@ public class GameActivity extends AppCompatActivity {
         countdownTask = new Runnable() {
             @Override
             public void run() {
-                countdownNum--;
-                if(countdownNum > 0) {
-                    countdownView.setText(String.valueOf(countdownNum));
-                    handler.postDelayed(countdownTask, 1000);
-                } else {
-                    countdownView.setVisibility(View.GONE);
-                    Blurry.delete((ViewGroup) findViewById(android.R.id.content));
-                    startSnake();
-                    setSwipeListener();
+                if(!gameOver) {
+                    countdownNum--;
+                    if(countdownNum > 0) {
+                        countdownView.setText(String.valueOf(countdownNum));
+                        handler.postDelayed(countdownTask, 800);
+                    } else {
+                        countdownView.setVisibility(View.GONE);
+                        startup = false;
+                        snakeStopped = false;
+                        Blurry.delete((ViewGroup) findViewById(android.R.id.content));
+                        startSnake();
+                        setSwipeListener();
+                    }
                 }
             }
         };
@@ -154,17 +176,78 @@ public class GameActivity extends AppCompatActivity {
      * Start moving the snake by repeatedly calling moveSnake
      */
     private void startSnake() {
+        gameOver = false;
+        snakeStopped = false;
         gameStartTask = new Runnable() {
             @Override
             public void run() {
-                if(moveSnake()) {
-                    handler.postDelayed(gameStartTask, speed);
-                } else {
-                    Toast.makeText(thisContext, "GAME OVER", Toast.LENGTH_SHORT).show();
+                if(!snakeStopped) {
+                    boolean validStatus = moveSnake();
+                    if(validStatus) {
+                        handler.postDelayed(gameStartTask, speed);
+                    } else {
+                        gameOver = true;
+                        Toast.makeText(thisContext, "GAME OVER", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         };
         gameStartTask.run();
+    }
+
+    /**
+     * Pause the game
+     */
+    private void pauseGame() {
+        snakeStopped = true;
+        ViewGroup viewgroup = (ViewGroup) findViewById(android.R.id.content);
+        Blurry.with(this).radius(8).sampling(3).onto(viewgroup);
+
+        TextView pausedTextView = new TextView(this);
+        pausedTextView.setText("Quit game?");
+        pausedTextView.setTextSize(30);
+        pausedTextView.setPadding(0,100,0,0);
+        pausedTextView.setTextColor(Color.BLACK);
+        pausedTextView.setGravity(Gravity.CENTER);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(pausedTextView);
+        builder.setCancelable(false);
+
+        builder.setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        gameOver = true;
+                        snakeStopped = true;
+                        GameActivity.this.finish();
+                        dialog.cancel();
+                    }
+                });
+
+        builder.setNegativeButton(
+                "No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Blurry.delete((ViewGroup) findViewById(android.R.id.content));
+                        gameStartTask.run();
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+
+    /**
+     * Finish game and go back to landing page
+     */
+    public void finishGame() {
+        gameOver = true;
+        snakeStopped = true;
+        countdownNum = 4;
+        this.finish();
     }
 
     /**
