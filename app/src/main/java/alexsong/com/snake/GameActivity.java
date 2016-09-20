@@ -1,14 +1,17 @@
 package alexsong.com.snake;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -19,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import jp.wasabeef.blurry.Blurry;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -33,7 +38,10 @@ public class GameActivity extends AppCompatActivity {
     public List<int[]> forbiddenList = new ArrayList<>();
     public DIRECTION currDirection;
     private Handler handler = new Handler();
-    private Runnable handlerTask;
+    private Runnable gameStartTask;
+    private Runnable countdownTask;
+    private TextView countdownView;
+    private int countdownNum = 4;
     private static final int TABLE_WIDTH = 20;
     private static final int TABLE_HEIGHT = 25;
     private static final int SNAKE_START_X = 6;
@@ -60,8 +68,22 @@ public class GameActivity extends AppCompatActivity {
         createGameTable();
         scoreMap.put(scoreKey, 0);
         currDirection = DIRECTION.RIGHT;
-        startSnake();
-        setSwipeListener();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if(hasFocus) {
+            ViewGroup viewgroup = (ViewGroup) findViewById(android.R.id.content);
+            Blurry.with(this).radius(8).sampling(3).onto(viewgroup);
+            countdownView = new TextView(this);
+            countdownView.setText(String.valueOf(countdownNum));
+            countdownView.setTextSize(120);
+            countdownView.setTextColor(Color.WHITE);
+            countdownView.setGravity(Gravity.CENTER);
+            viewgroup.addView(countdownView);
+            countDown();
+        }
     }
 
     /**
@@ -107,20 +129,42 @@ public class GameActivity extends AppCompatActivity {
     }
 
     /**
+     * Countdown before starting game
+     */
+    private void countDown() {
+        countdownTask = new Runnable() {
+            @Override
+            public void run() {
+                countdownNum--;
+                if(countdownNum > 0) {
+                    countdownView.setText(String.valueOf(countdownNum));
+                    handler.postDelayed(countdownTask, 1000);
+                } else {
+                    countdownView.setVisibility(View.GONE);
+                    Blurry.delete((ViewGroup) findViewById(android.R.id.content));
+                    startSnake();
+                    setSwipeListener();
+                }
+            }
+        };
+        countdownTask.run();
+    }
+
+    /**
      * Start moving the snake by repeatedly calling moveSnake
      */
     private void startSnake() {
-        handlerTask = new Runnable() {
+        gameStartTask = new Runnable() {
             @Override
             public void run() {
                 if(moveSnake()) {
-                    handler.postDelayed(handlerTask, speed);
+                    handler.postDelayed(gameStartTask, speed);
                 } else {
                     Toast.makeText(thisContext, "GAME OVER", Toast.LENGTH_SHORT).show();
                 }
             }
         };
-        handlerTask.run();
+        gameStartTask.run();
     }
 
     /**
