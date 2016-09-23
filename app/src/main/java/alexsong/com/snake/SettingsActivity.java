@@ -1,5 +1,6 @@
 package alexsong.com.snake;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +26,12 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         speedDropdown.setAdapter(adapter);
         speedDropdown.setOnItemSelectedListener(this);
+
+        SharedPreferences sharedPref = this.getSharedPreferences("Settings", MODE_PRIVATE);
+        int value = sharedPref.getInt("speedDropdown", -1);
+        if(value != -1) {
+            speedDropdown.setSelection(value);
+        }
     }
 
     @Override
@@ -40,6 +47,11 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                 GameActivity.speed = FAST;
                 break;
         }
+        int choice = speedDropdown.getSelectedItemPosition();
+        SharedPreferences sharedPref = this.getSharedPreferences("Settings", MODE_PRIVATE);
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        prefEditor.putInt("speedDropdown", choice);
+        prefEditor.apply();
     }
 
     @Override
