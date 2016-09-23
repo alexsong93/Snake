@@ -505,16 +505,28 @@ public class GameActivity extends AppCompatActivity {
         View rootView = getWindow().getDecorView().getRootView();
         rootView.setOnTouchListener(new OnSwipeTouchListener(this) {
             public void onSwipeLeft() {
-                currDirection = DIRECTION.LEFT;
+                int forbiddenListSize = forbiddenList.size();
+                if(forbiddenListSize == 1 || (forbiddenListSize > 1 && currDirection != DIRECTION.RIGHT)) {
+                    currDirection = DIRECTION.LEFT;
+                }
             }
             public void onSwipeRight() {
-                currDirection = DIRECTION.RIGHT;
+                int forbiddenListSize = forbiddenList.size();
+                if(forbiddenListSize == 1 || (forbiddenListSize > 1 && currDirection != DIRECTION.LEFT)) {
+                    currDirection = DIRECTION.RIGHT;
+                }
             }
             public void onSwipeTop() {
-                currDirection = DIRECTION.UP;
+                int forbiddenListSize = forbiddenList.size();
+                if(forbiddenListSize == 1 || (forbiddenListSize > 1 && currDirection != DIRECTION.DOWN)) {
+                    currDirection = DIRECTION.UP;
+                }
             }
             public void onSwipeBottom() {
-                currDirection = DIRECTION.DOWN;
+                int forbiddenListSize = forbiddenList.size();
+                if(forbiddenListSize == 1 || (forbiddenListSize > 1 && currDirection != DIRECTION.UP)) {
+                    currDirection = DIRECTION.DOWN;
+                }
             }
         });
     }
