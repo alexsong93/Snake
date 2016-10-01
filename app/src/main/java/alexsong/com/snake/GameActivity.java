@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
@@ -44,10 +45,10 @@ public class GameActivity extends AppCompatActivity {
     private Runnable countdownTask;
     private TextView countdownView;
     private int countdownNum = 4;
-    private static final int TABLE_WIDTH = 20;
+    private static final int TABLE_WIDTH = 21;
     private static final int TABLE_HEIGHT = 25;
-    private static final int SNAKE_START_X = 6;
-    private static final int SNAKE_START_Y = 6;
+    private static final int SNAKE_START_X = TABLE_HEIGHT/2;
+    private static final int SNAKE_START_Y = TABLE_WIDTH/2;
     private static final int GOLD_RANGE = 5;
     private static final int GOLD_BONUS = 2;
 
@@ -59,8 +60,6 @@ public class GameActivity extends AppCompatActivity {
     public static int speed = 200;
     public TextView scoreView;
     public int score = 0;
-    public Map<String, Integer> scoreMap = new HashMap<>();
-    private static final String scoreKey = "Score";
 
     private boolean gameOver = false;
     private boolean snakeStopped = false;
@@ -70,10 +69,15 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        // Set custom font
+        scoreView = (TextView) findViewById(R.id.score);
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Fipps-Regular.otf");
+        scoreView.setTypeface(font);
+
         forbiddenList.add(new int[]{SNAKE_START_X, SNAKE_START_Y});
         generateFoodLocation();
         createGameTable();
-        scoreMap.put(scoreKey, 0);
         currDirection = DIRECTION.RIGHT;
     }
 
@@ -493,10 +497,8 @@ public class GameActivity extends AppCompatActivity {
      * Update the current score
      */
     private void updateScore() {
-        score = scoreMap.get(scoreKey)+1;
-        scoreMap.put(scoreKey, score);
-        scoreView = (TextView) findViewById(R.id.score);
-        scoreView.setText(getString(R.string.scoreText, scoreKey, score));
+        score++;
+        scoreView.setText(String.valueOf(score));
     }
 
     /**

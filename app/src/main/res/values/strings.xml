@@ -1,11 +1,7 @@
 <resources>
     <string name="app_name">Snake</string>
-    <!--Colors-->
-    <color name="black">#000000</color>
-    <color name="white">#FFFFFF</color>
-    <color name="metallicGray">#b9d1dd</color>
     <!--Home strings-->
-    <string name="title">"SNAKE!"</string>
+    <string name="title">"SNAKE"</string>
     <string name="startBtn">"Play"</string>
     <string name="settingsBtn">"Settings"</string>
     <!--Settings strings-->
@@ -13,6 +9,5 @@
     <string name="speed">Speed</string>
     <string name="snakeColor">Snake Color</string>
     <!--Game strings-->
-    <string name="score">Score: 0</string>
-    <string name="scoreText">%1$s: %2$d</string>
+    <string name="score">0</string>
 </resources>
