@@ -50,11 +50,12 @@ public class GameActivity extends AppCompatActivity {
     private static final int SNAKE_START_Y = 6;
     private static final int GOLD_RANGE = 5;
     private static final int GOLD_BONUS = 2;
-    private static final int SNAKE_IMAGE = R.drawable.snake_2;
+
     private static final int FOOD_IMAGE = R.drawable.food_3;
     private static final int GOLD_IMAGE = R.drawable.gold_2;
     private static final int BACKGROUND_TILE = R.drawable.background_tile_2;
 
+    public static int SNAKE_IMAGE = R.drawable.snake_1;
     public static int speed = 200;
     public TextView scoreView;
     public int score = 0;

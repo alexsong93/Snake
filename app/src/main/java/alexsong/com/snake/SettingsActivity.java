@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -27,11 +28,53 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         speedDropdown.setAdapter(adapter);
         speedDropdown.setOnItemSelectedListener(this);
 
+        // Select previously selected speed
         SharedPreferences sharedPref = this.getSharedPreferences("Settings", MODE_PRIVATE);
         int value = sharedPref.getInt("speedDropdown", -1);
         if(value != -1) {
             speedDropdown.setSelection(value);
         }
+
+        // Select previously selected snake color
+        RadioButton greenBtn = (RadioButton) findViewById(R.id.greenSnakeBtn);
+        RadioButton pinkBtn = (RadioButton) findViewById(R.id.pinkSnakeBtn);
+        boolean greenBtnClicked = sharedPref.getBoolean("greenSnake", true);
+        if(greenBtnClicked) {
+            GameActivity.SNAKE_IMAGE = R.drawable.snake_1;
+            greenBtn.setButtonDrawable(R.drawable.snake_1_selected);
+            pinkBtn.setButtonDrawable(R.drawable.snake_2_btn);
+        } else{
+            GameActivity.SNAKE_IMAGE = R.drawable.snake_2;
+            pinkBtn.setButtonDrawable(R.drawable.snake_2_selected);
+            greenBtn.setButtonDrawable(R.drawable.snake_1_btn);
+        }
+    }
+
+    public void onSnakeColorButtonClicked(View view) {
+        RadioButton greenBtn = (RadioButton) findViewById(R.id.greenSnakeBtn);
+        RadioButton pinkBtn = (RadioButton) findViewById(R.id.pinkSnakeBtn);
+        boolean checked = ((RadioButton) view).isChecked();
+        switch(view.getId()) {
+            case R.id.greenSnakeBtn:
+                if (checked) {
+                    GameActivity.SNAKE_IMAGE = R.drawable.snake_1;
+                    greenBtn.setButtonDrawable(R.drawable.snake_1_selected);
+                    pinkBtn.setButtonDrawable(R.drawable.snake_2_btn);
+                    break;
+                }
+            case R.id.pinkSnakeBtn:
+                if (checked) {
+                    GameActivity.SNAKE_IMAGE = R.drawable.snake_2;
+                    pinkBtn.setButtonDrawable(R.drawable.snake_2_selected);
+                    greenBtn.setButtonDrawable(R.drawable.snake_1_btn);
+                    break;
+                }
+        }
+        SharedPreferences sharedPref = this.getSharedPreferences("Settings", MODE_PRIVATE);
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        prefEditor.putBoolean("greenSnake", greenBtn.isChecked());
+        prefEditor.putBoolean("pinkSnake", pinkBtn.isChecked());
+        prefEditor.apply();
     }
 
     @Override

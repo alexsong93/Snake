@@ -16,9 +16,10 @@
         android:textSize="40sp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:text="Settings" />
+        android:text="@string/settings" />
 
     <RelativeLayout
+        android:id="@+id/speed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/settings"
@@ -30,8 +31,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
             android:layout_marginStart="40dp"
-            android:textSize="25sp"
-            android:text="Speed" />
+            android:textSize="20sp"
+            android:text="@string/speed" />
 
         <Spinner
             android:id="@+id/speedSpinner"
@@ -44,5 +45,45 @@
             android:spinnerMode="dropdown" />
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/speed"
+        android:layout_marginTop="30dp">
+
+        <TextView
+            android:id="@+id/SnakeColorText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginStart="40dp"
+            android:textSize="20sp"
+            android:text="@string/snakeColor" />
+
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="40dp"
+            android:layout_marginEnd="40dp">
+            <RadioButton android:id="@+id/greenSnakeBtn"
+                android:button="@drawable/snake_1_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                android:onClick="onSnakeColorButtonClicked"/>
+            <RadioButton android:id="@+id/pinkSnakeBtn"
+                android:button="@drawable/snake_2_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="18dp"
+                android:layout_marginEnd="18dp"
+                android:onClick="onSnakeColorButtonClicked"/>
+        </RadioGroup>
+
+    </RelativeLayout>
 
 </RelativeLayout>

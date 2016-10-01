@@ -16,7 +16,7 @@ tools:context="alexsong.com.snake.GameActivity">
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:textSize="20sp"
-        android:text="Score: 0"/>
+        android:text="@string/score"/>
 
     <!-- The table layout where the actual game will take place -->
     <TableLayout

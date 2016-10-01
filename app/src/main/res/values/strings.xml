@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">Snake</string>
     <string name="scoreText">%1$s: %2$d</string>
+    <!--Home strings-->
+    <string name="title">"SNAKE!"</string>
+    <string name="startBtn">"Play"</string>
+    <string name="settingsBtn">"Settings"</string>
+    <!--Settings strings-->
+    <string name="settings">Settings</string>
+    <string name="speed">Speed</string>
+    <string name="snakeColor">Snake Color</string>
+    <!--Game strings-->
+    <string name="score">Score: 0</string>
 </resources>
