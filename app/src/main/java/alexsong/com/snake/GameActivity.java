@@ -3,6 +3,7 @@ package alexsong.com.snake;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Handler;
@@ -15,6 +16,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -57,7 +59,7 @@ public class GameActivity extends AppCompatActivity {
     private static final int BACKGROUND_TILE = R.drawable.background_tile_2;
 
     public static int SNAKE_IMAGE = R.drawable.snake_1;
-    public static int speed = 200;
+    public static int speed = SettingsActivity.NORMAL;
     public TextView scoreView;
     public int score = 0;
 
@@ -74,6 +76,27 @@ public class GameActivity extends AppCompatActivity {
         scoreView = (TextView) findViewById(R.id.score);
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Fipps-Regular.otf");
         scoreView.setTypeface(font);
+
+        // Set speed, if already selected
+        SharedPreferences sharedPref = getSharedPreferences("Settings", MODE_PRIVATE);
+        int value = sharedPref.getInt("speedDropdown", -1);
+        if(value != -1) {
+            if (value == 0) {
+                GameActivity.speed = SettingsActivity.SLOW;
+            } else if (value == 1) {
+                GameActivity.speed = SettingsActivity.NORMAL;
+            } else if (value == 2) {
+                GameActivity.speed = SettingsActivity.FAST;
+            }
+        }
+        // Set snake color, if already selected
+        boolean greenBtnClicked = sharedPref.getBoolean("greenSnake", true);
+        boolean pinkBtnClicked = sharedPref.getBoolean("pinkSnake", true);
+        if(greenBtnClicked) {
+            SNAKE_IMAGE = R.drawable.snake_1;
+        } else if(pinkBtnClicked) {
+            SNAKE_IMAGE = R.drawable.snake_2;
+        }
 
         forbiddenList.add(new int[]{SNAKE_START_X, SNAKE_START_Y});
         generateFoodLocation();

@@ -1,6 +1,7 @@
 package alexsong.com.snake;
 
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,9 +14,9 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
     public Spinner speedDropdown;
     private static final String[] speeds = {"Slow", "Normal", "Fast"};
-    private static final int SLOW = 400;
-    private static final int NORMAL = 200;
-    private static final int FAST = 120;
+    public static final int SLOW = 400;
+    public static final int NORMAL = 200;
+    public static final int FAST = 120;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +44,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             GameActivity.SNAKE_IMAGE = R.drawable.snake_1;
             greenBtn.setButtonDrawable(R.drawable.snake_1_selected);
             pinkBtn.setButtonDrawable(R.drawable.snake_2_btn);
-        } else{
+        } else {
             GameActivity.SNAKE_IMAGE = R.drawable.snake_2;
             pinkBtn.setButtonDrawable(R.drawable.snake_2_selected);
             greenBtn.setButtonDrawable(R.drawable.snake_1_btn);
