@@ -101,7 +101,8 @@ public class GameActivity extends AppCompatActivity {
         forbiddenList.add(new int[]{SNAKE_START_X, SNAKE_START_Y});
         generateFoodLocation();
         createGameTable();
-        currDirection = DIRECTION.RIGHT;
+        int index = random.nextInt(4);
+        currDirection = DIRECTION.values()[index];
     }
 
     @Override
