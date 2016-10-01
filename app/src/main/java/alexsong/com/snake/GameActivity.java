@@ -1,6 +1,5 @@
 package alexsong.com.snake;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -16,16 +15,13 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import jp.wasabeef.blurry.Blurry;
@@ -51,7 +47,7 @@ public class GameActivity extends AppCompatActivity {
     private static final int TABLE_HEIGHT = 25;
     private static final int SNAKE_START_X = TABLE_HEIGHT/2;
     private static final int SNAKE_START_Y = TABLE_WIDTH/2;
-    private static final int GOLD_RANGE = 5;
+    private static final int GOLD_RANGE = 7;
     private static final int GOLD_BONUS = 2;
 
     private static final int FOOD_IMAGE = R.drawable.food_3;
@@ -233,7 +229,7 @@ public class GameActivity extends AppCompatActivity {
         Blurry.with(this).radius(8).sampling(3).onto(viewgroup);
 
         TextView pausedTextView = new TextView(this);
-        pausedTextView.setText("Quit game?");
+        pausedTextView.setText(R.string.quitPrompt);
         pausedTextView.setTextSize(30);
         pausedTextView.setPadding(0,100,0,0);
         pausedTextView.setTextColor(Color.BLACK);
@@ -319,7 +315,7 @@ public class GameActivity extends AppCompatActivity {
         if(foundFood) {
             generateFoodLocation();
             updateFoodLocation();
-            updateScore();
+            updateScore(1);
             if(score > 0 && score%GOLD_RANGE == 0) {
                 generateNewGold();
             }
@@ -339,6 +335,7 @@ public class GameActivity extends AppCompatActivity {
                 // Vibrate phone if snake hits gold
                 Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
                 v.vibrate(200);
+                updateScore(2);
                 // remove gold from goldList and reduce snake size
                 goldList.remove(gCell);
                 reduceSnakeSize();
@@ -519,9 +516,10 @@ public class GameActivity extends AppCompatActivity {
 
     /**
      * Update the current score
+     * @param i amount to increase score by
      */
-    private void updateScore() {
-        score++;
+    private void updateScore(int i) {
+        score += i;
         scoreView.setText(String.valueOf(score));
     }
 

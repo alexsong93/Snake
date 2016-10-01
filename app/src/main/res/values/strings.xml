@@ -10,4 +10,5 @@
     <string name="snakeColor">Snake Color</string>
     <!--Game strings-->
     <string name="score">0</string>
+    <string name="quitPrompt">Quit game?</string>
 </resources>
