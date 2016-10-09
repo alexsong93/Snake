@@ -1,6 +1,7 @@
 package alexsong.com.snake;
 
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -23,6 +25,14 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Fipps-Regular.otf");
+        TextView settings = (TextView) findViewById(R.id.settings);
+        TextView speedText = (TextView) findViewById(R.id.SpeedText);
+        TextView colorText = (TextView) findViewById(R.id.SnakeColorText);
+        settings.setTypeface(font);
+        speedText.setTypeface(font);
+        colorText.setTypeface(font);
+
         speedDropdown = (Spinner) findViewById(R.id.speedSpinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.speed_spinner_item, speeds);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -34,6 +44,8 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         int value = sharedPref.getInt("speedDropdown", -1);
         if(value != -1) {
             speedDropdown.setSelection(value);
+        } else {
+            speedDropdown.setSelection(1);  // speed initially set to Normal
         }
 
         // Select previously selected snake color

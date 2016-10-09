@@ -78,12 +78,14 @@ public class GameActivity extends AppCompatActivity {
         int value = sharedPref.getInt("speedDropdown", -1);
         if(value != -1) {
             if (value == 0) {
-                GameActivity.speed = SettingsActivity.SLOW;
+                speed = SettingsActivity.SLOW;
             } else if (value == 1) {
-                GameActivity.speed = SettingsActivity.NORMAL;
+                speed = SettingsActivity.NORMAL;
             } else if (value == 2) {
-                GameActivity.speed = SettingsActivity.FAST;
+                speed = SettingsActivity.FAST;
             }
+        } else {
+            speed = SettingsActivity.NORMAL;
         }
         // Set snake color, if already selected
         boolean greenBtnClicked = sharedPref.getBoolean("greenSnake", true);
@@ -109,8 +111,10 @@ public class GameActivity extends AppCompatActivity {
             Blurry.with(this).radius(8).sampling(3).onto(viewgroup);
             countdownView = new TextView(this);
             countdownView.setText(String.valueOf(countdownNum));
-            countdownView.setTextSize(120);
+            countdownView.setTextSize(80);
             countdownView.setTextColor(Color.WHITE);
+            Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Fipps-Regular.otf");
+            countdownView.setTypeface(font);
             countdownView.setGravity(Gravity.CENTER);
             viewgroup.addView(countdownView);
             startup = true;
@@ -230,7 +234,9 @@ public class GameActivity extends AppCompatActivity {
 
         TextView pausedTextView = new TextView(this);
         pausedTextView.setText(R.string.quitPrompt);
-        pausedTextView.setTextSize(30);
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Fipps-Regular.otf");
+        pausedTextView.setTypeface(font);
+        pausedTextView.setTextSize(22);
         pausedTextView.setPadding(0,100,0,0);
         pausedTextView.setTextColor(Color.BLACK);
         pausedTextView.setGravity(Gravity.CENTER);

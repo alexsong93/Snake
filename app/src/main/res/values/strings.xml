@@ -7,7 +7,7 @@
     <!--Settings strings-->
     <string name="settings">Settings</string>
     <string name="speed">Speed</string>
-    <string name="snakeColor">Snake Color</string>
+    <string name="snakeColor">Color</string>
     <!--Game strings-->
     <string name="score">0</string>
     <string name="quitPrompt">Quit game?</string>

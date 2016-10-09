@@ -7,15 +7,17 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/lightblue"
     tools:context="alexsong.com.snake.SettingsActivity">
 
     <TextView
         android:id="@+id/settings"
+        android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="40sp"
+        android:textSize="28sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="120dp"
         android:text="@string/settings" />
 
     <RelativeLayout
@@ -23,15 +25,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/settings"
-        android:layout_marginTop="60dp">
+        android:layout_marginTop="60dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp">
 
         <TextView
             android:id="@+id/SpeedText"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:layout_marginStart="40dp"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:text="@string/speed" />
 
         <Spinner
@@ -40,8 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="40dp"
-            android:layout_marginEnd="40dp"
+            android:layout_marginTop="3dp"
             android:spinnerMode="dropdown" />
     </RelativeLayout>
 
@@ -49,15 +53,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/speed"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginStart="40dp">
 
         <TextView
             android:id="@+id/SnakeColorText"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:layout_marginStart="40dp"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:text="@string/snakeColor" />
 
         <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
@@ -66,8 +73,7 @@
             android:orientation="horizontal"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="40dp"
-            android:layout_marginEnd="40dp">
+            android:layout_marginTop="3dp">
             <RadioButton android:id="@+id/greenSnakeBtn"
                 android:button="@drawable/snake_1_btn"
                 android:layout_width="wrap_content"
@@ -79,8 +85,8 @@
                 android:button="@drawable/snake_2_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="18dp"
-                android:layout_marginEnd="18dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
                 android:onClick="onSnakeColorButtonClicked"/>
         </RadioGroup>
 
