@@ -6,12 +6,11 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,10 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +71,11 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-3940256099942544~6821444372");
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
         // Set custom font
@@ -322,7 +330,7 @@ public class GameActivity extends AppCompatActivity {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
         ViewGroup parent = (ViewGroup) pausedTextView.getParent();
-        parent.setPadding(100, 0, 100, 0);
+        parent.setPadding(100, 0, 100, 100);
     }
 
 
@@ -592,29 +600,31 @@ public class GameActivity extends AppCompatActivity {
         rootView.setOnTouchListener(new OnSwipeTouchListener(this) {
             public void onSwipeLeft() {
                 int forbiddenListSize = forbiddenList.size();
-                if(forbiddenListSize == 1 || (forbiddenListSize > 1 && currDirection != DIRECTION.RIGHT)) {
+                if (forbiddenListSize == 1 || (forbiddenListSize > 1 && currDirection != DIRECTION.RIGHT)) {
                     currDirection = DIRECTION.LEFT;
                 }
             }
+
             public void onSwipeRight() {
                 int forbiddenListSize = forbiddenList.size();
-                if(forbiddenListSize == 1 || (forbiddenListSize > 1 && currDirection != DIRECTION.LEFT)) {
+                if (forbiddenListSize == 1 || (forbiddenListSize > 1 && currDirection != DIRECTION.LEFT)) {
                     currDirection = DIRECTION.RIGHT;
                 }
             }
+
             public void onSwipeTop() {
                 int forbiddenListSize = forbiddenList.size();
-                if(forbiddenListSize == 1 || (forbiddenListSize > 1 && currDirection != DIRECTION.DOWN)) {
+                if (forbiddenListSize == 1 || (forbiddenListSize > 1 && currDirection != DIRECTION.DOWN)) {
                     currDirection = DIRECTION.UP;
                 }
             }
+
             public void onSwipeBottom() {
                 int forbiddenListSize = forbiddenList.size();
-                if(forbiddenListSize == 1 || (forbiddenListSize > 1 && currDirection != DIRECTION.UP)) {
+                if (forbiddenListSize == 1 || (forbiddenListSize > 1 && currDirection != DIRECTION.UP)) {
                     currDirection = DIRECTION.DOWN;
                 }
             }
         });
     }
 }
-

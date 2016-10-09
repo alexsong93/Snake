@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "137255052803",
+    "firebase_url": "https://snake-ce32e.firebaseio.com",
+    "project_id": "snake-ce32e",
+    "storage_bucket": "snake-ce32e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:137255052803:android:01f2ee819cd41b41",
+        "android_client_info": {
+          "package_name": "alexsong.com.snake"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "137255052803-16h3vp9rqtp0bvld1pu44bavudclukvr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvam5OFZKDueRT0e5bM-yLaPrG2qRYc3o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -13,4 +13,6 @@
     <string name="quitPrompt">Quit game?</string>
     <string name="endScore">Score: %1$d</string>
     <string name="bestScore">%1$s\nBest: %2$d</string>
+    <!--Ads-->
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>
