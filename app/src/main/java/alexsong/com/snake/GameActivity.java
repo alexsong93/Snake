@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +55,7 @@ public class GameActivity extends AppCompatActivity {
 
     public static int SNAKE_IMAGE = R.drawable.snake_1;
     public static int speed = SettingsActivity.NORMAL;
+    public static String speedText = "Normal";
     public TextView scoreView;
     public int score = 0;
 
@@ -79,10 +79,13 @@ public class GameActivity extends AppCompatActivity {
         if(value != -1) {
             if (value == 0) {
                 speed = SettingsActivity.SLOW;
+                speedText = "Slow";
             } else if (value == 1) {
                 speed = SettingsActivity.NORMAL;
+                speedText = "Normal";
             } else if (value == 2) {
                 speed = SettingsActivity.FAST;
+                speedText = "Fast";
             }
         } else {
             speed = SettingsActivity.NORMAL;
@@ -216,7 +219,57 @@ public class GameActivity extends AppCompatActivity {
                         handler.postDelayed(gameStartTask, speed);
                     } else {
                         gameOver = true;
-                        Toast.makeText(thisContext, "GAME OVER", Toast.LENGTH_SHORT).show();
+
+                        // Get/set high score
+                        SharedPreferences prefs = thisContext.getSharedPreferences("highscore", Context.MODE_PRIVATE);
+                        int highscore = prefs.getInt(String.valueOf(speed), 0);
+                        if(score > highscore) {
+                            highscore = score;
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putInt(String.valueOf(speed), score);
+                            editor.apply();
+                        }
+
+                        TextView restartTextView = new TextView(thisContext);
+                        restartTextView.setText(String.format(getResources().getString(R.string.bestScore), speedText, highscore));
+                        restartTextView.setTextSize(20);
+                        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Fipps-Regular.otf");
+                        restartTextView.setTypeface(font);
+                        restartTextView.setGravity(Gravity.CENTER);
+                        restartTextView.setTextColor(Color.BLACK);
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(thisContext, R.style.CustomDialog);
+                        builder.setView(restartTextView);
+                        builder.setCancelable(false);
+                        builder.setNegativeButton(
+                                "Restart",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        recreate();
+                                        dialog.cancel();
+                                    }
+                                });
+
+                        builder.setPositiveButton(
+                                "Quit",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        finishGame();
+                                        dialog.cancel();
+                                    }
+                                });
+                        TextView dialogTitle = new TextView(thisContext);
+                        dialogTitle.setText(String.format(getResources().getString(R.string.endScore), score));
+                        dialogTitle.setTextSize(30);
+                        dialogTitle.setTypeface(font);
+                        dialogTitle.setGravity(Gravity.CENTER);
+                        dialogTitle.setTextColor(Color.BLACK);
+
+                        builder.setCustomTitle(dialogTitle);
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                        ViewGroup parent = (ViewGroup) dialogTitle.getParent();
+                        parent.setPadding(100, 0, 100, 50);
                     }
                 }
             }
@@ -237,14 +290,12 @@ public class GameActivity extends AppCompatActivity {
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Fipps-Regular.otf");
         pausedTextView.setTypeface(font);
         pausedTextView.setTextSize(22);
-        pausedTextView.setPadding(0,100,0,0);
         pausedTextView.setTextColor(Color.BLACK);
         pausedTextView.setGravity(Gravity.CENTER);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(pausedTextView);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomDialog);
         builder.setCancelable(false);
-
+        builder.setView(pausedTextView);
         builder.setPositiveButton(
                 "Yes",
                 new DialogInterface.OnClickListener() {
@@ -268,6 +319,8 @@ public class GameActivity extends AppCompatActivity {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+        ViewGroup parent = (ViewGroup) pausedTextView.getParent();
+        parent.setPadding(100, 0, 100, 0);
     }
 
 

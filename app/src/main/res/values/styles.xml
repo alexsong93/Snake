@@ -8,4 +8,7 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name="CustomDialog" parent="android:Theme.Dialog">
+        <item name="android:windowBackground">@color/lightblue</item>
+    </style>
 </resources>
